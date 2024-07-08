@@ -10,8 +10,8 @@ console.log(currentDirectory);
 
 const mail = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // Use `true` for port 465, `false` for all other ports
+  port: 587,
+  secure: false, // Use `true` for port 465, `false` for all other ports
   auth: {
     user: "shyam020524@gmail.com",
     pass: "hggvjpshwigtmckk",
@@ -61,4 +61,53 @@ const sendPasswordResetLink = async (email, token, name) => {
   }
 };
 
-export { sendEmailVerificationLink, sendPasswordResetLink };
+// Mobile
+// send verification code through mail
+const sendVerificationCode = async (name, email, otp) => {
+  try {
+    const renderedContent = await ejs.renderFile(
+      `${currentDirectory}/../templates/otp.ejs`,
+      { name, otp }
+    );
+
+    const mailOptions = {
+      from: "shyam020524@gmail.com",
+      to: email,
+      subject: "Storytime - Email Confirmation",
+      html: renderedContent,
+    };
+
+    const verificationInfo = await mail.sendMail(mailOptions);
+    return verificationInfo;
+  } catch (error) {
+    return { error };
+  }
+};
+
+const sendPasswordResetVerificationCode = async (name, email, otp) => {
+  try {
+    const renderedContent = await ejs.renderFile(
+      `${currentDirectory}/../templates/reset_password_code.ejs`,
+      { name, otp }
+    );
+
+    const mailOptions = {
+      from: "shyam020524@gmail.com",
+      to: email,
+      subject: "Storytime - Password reset code",
+      html: renderedContent,
+    };
+
+    const verificationInfo = await mail.sendMail(mailOptions);
+    return verificationInfo;
+  } catch (error) {
+    return { error };
+  }
+};
+
+export {
+  sendEmailVerificationLink,
+  sendPasswordResetLink,
+  sendVerificationCode,
+  sendPasswordResetVerificationCode,
+};

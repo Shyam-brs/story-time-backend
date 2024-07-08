@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import { errorHandler, notFound } from "./src/middleware/errMiddleware.js";
-import cors from 'cors'
+import cors from "cors";
+import useragent from "express-useragent";
+
 // Routes
 import languageRoute from "./src/routes/languageRoute.js";
 import categoryRoute from "./src/routes/categoryRoute.js";
@@ -16,9 +18,10 @@ connectDB();
 const PORT = 5000;
 const app = express();
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(useragent.express());
 
 app.get("/", (req, res) => {
   res.send("Hello world!");
